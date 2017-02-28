@@ -4,6 +4,7 @@ A simple implementation of a server to return customised cloud-config.yml (to dr
 
 It's functional, but should be considered a work in progress; feel free to create an issue if you have questions or would like to contribute.
 
+Note that it won't (currently) handle the case where the iPXE server is attached to multiple VLANs (but the design could easily be extended to handle this).
 
 ## Configuration
 

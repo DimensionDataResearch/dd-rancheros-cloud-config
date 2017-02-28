@@ -18,7 +18,7 @@ func (app *Application) GetCloudConfig(context *gin.Context) {
 	var server *compute.Server
 
 	if clientIP != "127.0.0.1" {
-		remoteMACAddress := arp.Search(context.Request.RemoteAddr)
+		remoteMACAddress := arp.Search(clientIP)
 		if remoteMACAddress == "" {
 			context.String(http.StatusBadRequest,
 				"Sorry, I can't figure out your MAC address from your IPv4 address (%s).", clientIP,
