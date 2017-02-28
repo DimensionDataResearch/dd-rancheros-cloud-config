@@ -10,6 +10,7 @@ import (
 
 	"github.com/DimensionDataResearch/go-dd-cloud-compute/compute"
 	"github.com/mostlygeek/arp"
+	"github.com/spf13/viper"
 )
 
 // Application represents the state for the cloud-config generator.
@@ -23,13 +24,11 @@ type Application struct {
 	NetworkDomain *compute.NetworkDomain
 	VLAN          *compute.VLAN
 
-	stateLock *sync.Mutex
-
 	ServersByMACAddress map[string]compute.Server
 
-	runRefreshServers bool
-	refreshTimer      *time.Timer
-	cancelRefresh     chan bool
+	stateLock     *sync.Mutex
+	refreshTimer  *time.Timer
+	cancelRefresh chan bool
 }
 
 // NewApplication creates new application state.
@@ -42,13 +41,25 @@ func NewApplication() *Application {
 
 // Initialize performs initial configuration of the application.
 func (app *Application) Initialize() error {
-	app.McpUser = os.Getenv("MCP_USER")
-	app.McpPassword = os.Getenv("MCP_PASSWORD")
-	app.McpRegion = os.Getenv("MCP_REGION")
+	viper.BindEnv("MCP_USER", "mcp.user")
+	viper.BindEnv("MCP_PASSWORD", "mcp.password")
+	viper.BindEnv("MCP_REGION", "mcp.region")
+	viper.BindEnv("MCP_VLAN_ID", "network.vlan_id")
+
+	viper.SetConfigType("YAML")
+	viper.SetConfigFile("dd-rancheros-cc.yml")
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+
+	app.McpRegion = viper.GetString("mcp.region")
+	app.McpUser = viper.GetString("mcp.user")
+	app.McpPassword = viper.GetString("mcp.password")
 	app.Client = compute.NewClient(app.McpRegion, app.McpUser, app.McpPassword)
 
-	var err error
-	vlanID := os.Getenv("MCP_VLAN_ID")
+	vlanID := viper.GetString("network.vlan_id")
 	app.VLAN, err = app.Client.GetVLAN(vlanID)
 	if err != nil {
 		return err
