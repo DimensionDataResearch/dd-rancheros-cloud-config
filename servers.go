@@ -6,44 +6,64 @@ import (
 	"github.com/DimensionDataResearch/go-dd-cloud-compute/compute"
 )
 
-// FindServerByMACAddress finds the server (if any) posessing a network adapter with the specified MAC address.
-func (app *Application) FindServerByMACAddress(macAddress string) (*compute.Server, error) {
+// RefreshServerMetadata refreshes the map of MAC addresses to server metadata.
+func (app *Application) RefreshServerMetadata() error {
+	app.stateLock.Lock()
+	defer app.stateLock.Unlock()
+
+	serversByMACAddress := make(map[string]compute.Server)
+
 	page := compute.DefaultPaging()
 	page.PageSize = 50
 
 	for {
 		servers, err := app.Client.ListServersInNetworkDomain(app.NetworkDomain.ID, page)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if servers.IsEmpty() {
 			break
 		}
 
 		for _, server := range servers.Items {
-			if doesServerHaveMACAddress(server, macAddress) {
-				return &server, nil
+			// Ignore servers that are being deployed or destroyed.
+			if server.Network.PrimaryAdapter.PrivateIPv4Address == nil {
+				continue
+			}
+
+			primaryMACAddress := *server.Network.PrimaryAdapter.MACAddress
+			app.ServersByMACAddress[primaryMACAddress] = server
+
+			for _, additionalNetworkAdapter := range server.Network.AdditionalNetworkAdapters {
+				// Ignore network adapters that are being deployed or destroyed.
+				if additionalNetworkAdapter.PrivateIPv4Address == nil {
+					continue
+				}
+
+				additionalMACAddress := *additionalNetworkAdapter.MACAddress
+				app.ServersByMACAddress[additionalMACAddress] = server
 			}
 		}
 
 		page.Next()
 	}
 
-	return nil, nil
+	app.ServersByMACAddress = serversByMACAddress
+
+	return nil
 }
 
-func doesServerHaveMACAddress(server compute.Server, macAddress string) bool {
-	if *server.Network.PrimaryAdapter.MACAddress == macAddress {
-		return true
+// FindServerByMACAddress finds the server (if any) posessing a network adapter with the specified MAC address.
+func (app *Application) FindServerByMACAddress(macAddress string) *compute.Server {
+	app.stateLock.Lock()
+	defer app.stateLock.Unlock()
+
+	server, ok := app.ServersByMACAddress[macAddress]
+	if ok {
+		return &server
 	}
 
-	for _, networkAdapter := range server.Network.AdditionalNetworkAdapters {
-		if *networkAdapter.MACAddress == macAddress {
-			return true
-		}
-	}
-
-	return false
+	return nil
 }
 
 // Create a test server for calls from localhost.
