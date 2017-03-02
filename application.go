@@ -46,8 +46,8 @@ func (app *Application) Initialize() error {
 	viper.BindEnv("MCP_REGION", "mcp.region")
 	viper.BindEnv("MCP_VLAN_ID", "network.vlan_id")
 
-	viper.SetConfigType("YAML")
-	viper.SetConfigFile("dd-rancheros-cc.yml")
+	viper.SetConfigType("yaml")
+	viper.SetConfigFile("cloud-config-server.yml")
 
 	err := viper.ReadInConfig()
 	if err != nil {

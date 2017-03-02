@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	fmt.Printf("CloudControl server for RancherOS cloud-config.\n\t%s\n", ProductVersion)
+
 	app := NewApplication()
 	err := app.Initialize()
 	if err != nil {
