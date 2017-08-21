@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/DimensionDataResearch/go-dd-cloud-compute/compute"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/yaml.v2"
@@ -46,8 +48,8 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 					"eth*": gin.H{"dhcp": false},
 					"eth0": gin.H{
 						"addresses": []string{
-							*server.Network.PrimaryAdapter.PrivateIPv4Address + "/24",
-							*server.Network.PrimaryAdapter.PrivateIPv6Address + "/64",
+							*server.Network.PrimaryAdapter.PrivateIPv4Address + "/" + strconv.Itoa(app.VLAN.IPv4Range.PrefixSize),
+							*server.Network.PrimaryAdapter.PrivateIPv6Address + "/" + strconv.Itoa(app.VLAN.IPv6Range.PrefixSize),
 						},
 						"gateway":      app.VLAN.IPv4GatewayAddress,
 						"gateway_ipv6": app.VLAN.IPv6GatewayAddress,
@@ -81,6 +83,5 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 		return
 	}
 	cloudConfig = "#cloud-config\n" + string(serializedCloudConfig)
-	//	cloudConfig = string(serializedCloudConfig)
 	return
 }
