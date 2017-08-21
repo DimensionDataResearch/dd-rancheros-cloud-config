@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/DimensionDataResearch/go-dd-cloud-compute/compute"
@@ -49,6 +50,8 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 
 		page.Next()
 	}
+
+	log.Printf("ServersByMACAddress = '%#v'", serversByMACAddress)
 
 	app.ServersByMACAddress = serversByMACAddress
 

@@ -19,6 +19,10 @@ func main() {
 	// Start polling CloudControl for server metadata.
 	app.Start()
 
+	if os.Getenv("GIN_DEBUG") == "" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	server := gin.Default()
 	server.GET("/cloud-config.yml", app.GetCloudConfig)
 
