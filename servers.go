@@ -26,7 +26,6 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 
 			return err
 		}
-		log.Printf("ServerPage = '%#v'", servers)
 		if servers.IsEmpty() {
 			break
 		}
@@ -34,6 +33,11 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 		for _, server := range servers.Items {
 			// Ignore servers that are being deployed or destroyed.
 			if server.Network.PrimaryAdapter.PrivateIPv4Address == nil {
+				log.Printf("Skipping server '%s' ('%s') because it has no private IPv4 address",
+					server.Name,
+					server.ID,
+				)
+
 				continue
 			}
 
@@ -43,6 +47,13 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 			for _, additionalNetworkAdapter := range server.Network.AdditionalNetworkAdapters {
 				// Ignore network adapters that are being deployed or destroyed.
 				if additionalNetworkAdapter.PrivateIPv4Address == nil {
+					log.Printf("Skipping additional network adapter '%s' (MAC='%s') of server '%s' ('%s') because it has no private IPv4 address",
+						*additionalNetworkAdapter.ID,
+						*additionalNetworkAdapter.MACAddress,
+						server.Name,
+						server.ID,
+					)
+
 					continue
 				}
 
