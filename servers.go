@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/DimensionDataResearch/go-dd-cloud-compute/compute"
@@ -22,24 +21,15 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 	for {
 		servers, err := app.Client.ListServersInNetworkDomain(app.NetworkDomain.ID, page)
 		if err != nil {
-			log.Printf("Error in ListServersInNetworkDomain: %s", err.Error())
-
 			return err
 		}
 		if servers.IsEmpty() {
-			log.Printf("No more servers in network domain '%s'", app.NetworkDomain.ID)
-
 			break
 		}
 
 		for _, server := range servers.Items {
 			// Ignore servers that are being deployed or destroyed.
 			if server.Network.PrimaryAdapter.PrivateIPv4Address == nil {
-				log.Printf("Skipping server '%s' ('%s') because it has no private IPv4 address",
-					server.Name,
-					server.ID,
-				)
-
 				continue
 			}
 
@@ -49,13 +39,6 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 			for _, additionalNetworkAdapter := range server.Network.AdditionalNetworkAdapters {
 				// Ignore network adapters that are being deployed or destroyed.
 				if additionalNetworkAdapter.PrivateIPv4Address == nil {
-					log.Printf("Skipping additional network adapter '%s' (MAC='%s') of server '%s' ('%s') because it has no private IPv4 address",
-						*additionalNetworkAdapter.ID,
-						*additionalNetworkAdapter.MACAddress,
-						server.Name,
-						server.ID,
-					)
-
 					continue
 				}
 
@@ -66,8 +49,6 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 
 		page.Next()
 	}
-
-	log.Printf("ServersByMACAddress = '%#v'", serversByMACAddress)
 
 	app.ServersByMACAddress = serversByMACAddress
 

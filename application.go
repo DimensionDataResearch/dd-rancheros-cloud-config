@@ -93,12 +93,8 @@ func (app *Application) Initialize() error {
 
 // Start polling CloudControl for server metadata.
 func (app *Application) Start() {
-	log.Printf("Initialising...")
-
 	app.stateLock.Lock()
 	defer app.stateLock.Unlock()
-
-	log.Printf("Initialising ARP cache...")
 
 	// Warm up caches.
 	arp.CacheUpdate()
@@ -114,8 +110,6 @@ func (app *Application) Start() {
 
 	app.cancelRefresh = make(chan bool, 1)
 	app.refreshTimer = time.NewTimer(10 * time.Second)
-
-	log.Printf("Initialising CloudControl metadata cache...")
 
 	go func() {
 		cancelRefresh := app.cancelRefresh
@@ -140,8 +134,6 @@ func (app *Application) Start() {
 			}
 		}
 	}()
-
-	log.Printf("Initialised.")
 }
 
 // Stop polling CloudControl for server metadata.
