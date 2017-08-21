@@ -27,6 +27,8 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 			return err
 		}
 		if servers.IsEmpty() {
+			log.Printf("No more servers in network domain '%s'", app.NetworkDomain.ID)
+
 			break
 		}
 
@@ -42,7 +44,7 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 			}
 
 			primaryMACAddress := *server.Network.PrimaryAdapter.MACAddress
-			app.ServersByMACAddress[primaryMACAddress] = server
+			serversByMACAddress[primaryMACAddress] = server
 
 			for _, additionalNetworkAdapter := range server.Network.AdditionalNetworkAdapters {
 				// Ignore network adapters that are being deployed or destroyed.
@@ -58,7 +60,7 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 				}
 
 				additionalMACAddress := *additionalNetworkAdapter.MACAddress
-				app.ServersByMACAddress[additionalMACAddress] = server
+				serversByMACAddress[additionalMACAddress] = server
 			}
 		}
 
