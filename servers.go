@@ -7,9 +7,11 @@ import (
 )
 
 // RefreshServerMetadata refreshes the map of MAC addresses to server metadata.
-func (app *Application) RefreshServerMetadata() error {
-	app.stateLock.Lock()
-	defer app.stateLock.Unlock()
+func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
+	if acquireStateLock {
+		app.stateLock.Lock()
+		defer app.stateLock.Unlock()
+	}
 
 	serversByMACAddress := make(map[string]compute.Server)
 

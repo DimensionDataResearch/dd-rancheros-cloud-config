@@ -102,7 +102,7 @@ func (app *Application) Start() {
 
 	// Warm up caches.
 	arp.CacheUpdate()
-	err := app.RefreshServerMetadata()
+	err := app.RefreshServerMetadata(false)
 	if err != nil {
 		log.Printf("Error refreshing servers: %s",
 			err.Error(),
@@ -129,7 +129,7 @@ func (app *Application) Start() {
 			case <-refreshTimer:
 				log.Printf("Refreshing server MAC addresses...")
 
-				err := app.RefreshServerMetadata()
+				err := app.RefreshServerMetadata(true)
 				if err != nil {
 					log.Printf("Error refreshing servers: %s",
 						err.Error(),
