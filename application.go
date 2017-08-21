@@ -15,10 +15,14 @@ import (
 
 // Application represents the state for the cloud-config generator.
 type Application struct {
-	McpUser      string
-	McpPassword  string
-	McpRegion    string
-	SSHPublicKey string
+	McpUser             string
+	McpPassword         string
+	McpRegion           string
+	SSHPublicKey        string
+	SSHPublicKeyFromYML string
+	RancherAgentVersion string
+	RancherAgentURL     string
+	RancherOSDNS        string
 
 	Client        *compute.Client
 	NetworkDomain *compute.NetworkDomain
@@ -57,6 +61,10 @@ func (app *Application) Initialize() error {
 	app.McpRegion = viper.GetString("mcp.region")
 	app.McpUser = viper.GetString("mcp.user")
 	app.McpPassword = viper.GetString("mcp.password")
+	app.RancherAgentVersion = viper.GetString("rancher_agent.version")
+	app.RancherAgentURL = viper.GetString("rancher_agent.url")
+	app.SSHPublicKeyFromYML = viper.GetString("rancher_os.SSHPublicKey")
+	app.RancherOSDNS = viper.GetString("rancher_os.network.dns.nameservers")
 	app.Client = compute.NewClient(app.McpRegion, app.McpUser, app.McpPassword)
 
 	vlanID := viper.GetString("network.vlan_id")

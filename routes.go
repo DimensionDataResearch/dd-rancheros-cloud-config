@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/DimensionDataResearch/go-dd-cloud-compute/compute"
 	"github.com/gin-gonic/gin"
 	"github.com/mostlygeek/arp"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // GetCloudConfig handles HTTP GET for /cloud-config.yml
@@ -48,6 +50,20 @@ func (app *Application) GetCloudConfig(context *gin.Context) {
 
 		return
 	}
+	//context.String(http.StatusOK, "#cloud-config\n%s", cloudConfig)
+	//context.YAML(http.StatusOK, cloudConfig)
+	cloudConfigYaml, err := yaml.Marshal(cloudConfig)
 
-	context.YAML(http.StatusOK, cloudConfig)
+	if err != nil {
+
+		context.Error(err)
+
+		return
+
+	}
+
+	context.String(http.StatusOK, fmt.Sprintf("#cloud-config\n%s",
+
+		string(cloudConfigYaml),
+	))
 }

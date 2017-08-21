@@ -46,23 +46,41 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 					"eth*": gin.H{"dhcp": false},
 					"eth0": gin.H{
 						"addresses": []string{
-							*server.Network.PrimaryAdapter.PrivateIPv4Address,
-							*server.Network.PrimaryAdapter.PrivateIPv6Address,
+							*server.Network.PrimaryAdapter.PrivateIPv4Address + "/24",
+							*server.Network.PrimaryAdapter.PrivateIPv6Address + "/64",
 						},
 						"gateway":      app.VLAN.IPv4GatewayAddress,
 						"gateway_ipv6": app.VLAN.IPv6GatewayAddress,
 						"mtu":          1500,
 					},
+					"dns": gin.H{
+						"nameservers": []string{
+							app.RancherOSDNS,
+						},
+					},
+				},
+			},
+			"services": gin.H{
+				"rancher-agent1": gin.H{
+					"image":      app.RancherAgentVersion,
+					"command":    app.RancherAgentURL,
+					"privileged": true,
+					"volumes": []string{
+						"/var/run/docker.sock:/var/run/docker.sock",
+						"/var/lib/rancher:/var/lib/rancher",
+					},
+					"environment": gin.H{
+						"CATTLE_AGENT_IP": *server.Network.PrimaryAdapter.PrivateIPv4Address,
+					},
 				},
 			},
 		},
-		"ssh_authorized_keys": []string{app.SSHPublicKey},
+		"ssh_authorized_keys": []string{app.SSHPublicKeyFromYML},
 	})
 	if err != nil {
 		return
 	}
-
-	cloudConfig = string(serializedCloudConfig)
-
+	cloudConfig = "#cloud-config\n" + string(serializedCloudConfig)
+	//	cloudConfig = string(serializedCloudConfig)
 	return
 }

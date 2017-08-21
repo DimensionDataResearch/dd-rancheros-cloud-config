@@ -20,6 +20,16 @@ mcp:
 
 network:
   vlan_id: "my_vlan_id" # The Id of the VLAN where the iPXE and cloud-config server are running.
+
+rancher_os:
+  network:
+    dns:
+       nameservers: "DNS IP"
+  SSHPublicKey: "RAW Public key excluding email at end if present"
+
+rancher_agent:
+  version: "rancher/agent:v1.2.2" 
+  url: "https://rancherlabdns/v1/scripts/xxxxxx:yyyyyyyyyy:zzzzzzzz"
 ```
 
 OR:
