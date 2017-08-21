@@ -22,8 +22,11 @@ func (app *Application) RefreshServerMetadata(acquireStateLock bool) error {
 	for {
 		servers, err := app.Client.ListServersInNetworkDomain(app.NetworkDomain.ID, page)
 		if err != nil {
+			log.Printf("Error in ListServersInNetworkDomain: %s", err.Error())
+
 			return err
 		}
+		log.Printf("ServerPage = '%#v'", servers)
 		if servers.IsEmpty() {
 			break
 		}
