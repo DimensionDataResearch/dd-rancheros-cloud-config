@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 	"log"
-	"os"
+	//"os"
 	"sync"
 	"time"
 
@@ -15,10 +15,10 @@ import (
 
 // Application represents the state for the cloud-config generator.
 type Application struct {
-	McpUser             string
-	McpPassword         string
-	McpRegion           string
-	SSHPublicKey        string
+	McpUser     string
+	McpPassword string
+	McpRegion   string
+	//SSHPublicKey        string
 	SSHPublicKeyFromYML string
 	RancherAgentVersion string
 	RancherAgentURL     string
@@ -52,6 +52,7 @@ func (app *Application) Initialize() error {
 
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile("cloud-config-server.yml")
+	viper.SetConfigName("cloud-config-server")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/etc")
 
@@ -83,20 +84,20 @@ func (app *Application) Initialize() error {
 		return fmt.Errorf("Cannot find network domain with Id '%s'", app.VLAN.NetworkDomain.ID)
 	}
 
-	sshPublicKeyFile, err := os.Open(
-		os.Getenv("HOME") + "/.ssh/id_rsa.pub",
-	)
-	if err != nil {
-		return err
-	}
-	defer sshPublicKeyFile.Close()
+	//sshPublicKeyFile, err := os.Open(
+	//	os.Getenv("HOME") + "/.ssh/id_rsa.pub",
+	//)
+	//if err != nil {
+	//	return err
+	//}
+	//defer sshPublicKeyFile.Close()
 
-	sshPublicKeyData, err := ioutil.ReadAll(sshPublicKeyFile)
-	if err != nil {
-		return err
-	}
+	//sshPublicKeyData, err := ioutil.ReadAll(sshPublicKeyFile)
+	//if err != nil {
+	//	return err
+	//}
 
-	app.SSHPublicKey = string(sshPublicKeyData)
+	//app.SSHPublicKey = string(sshPublicKeyData)
 
 	return nil
 }
