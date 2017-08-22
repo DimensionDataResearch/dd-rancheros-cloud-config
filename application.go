@@ -52,6 +52,8 @@ func (app *Application) Initialize() error {
 
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile("cloud-config-server.yml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("/etc")
 
 	err := viper.ReadInConfig()
 	if err != nil {
