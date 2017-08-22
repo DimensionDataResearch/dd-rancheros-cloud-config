@@ -82,6 +82,8 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 	if err != nil {
 		return
 	}
+
 	cloudConfig = "#cloud-config\n" + string(serializedCloudConfig)
+
 	return
 }

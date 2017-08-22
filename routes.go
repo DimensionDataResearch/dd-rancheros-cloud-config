@@ -52,7 +52,6 @@ func (app *Application) GetCloudConfig(context *gin.Context) {
 	}
 
 	cloudConfigYaml, err := yaml.Marshal(cloudConfig)
-
 	if err != nil {
 
 		context.Error(err)
@@ -62,7 +61,6 @@ func (app *Application) GetCloudConfig(context *gin.Context) {
 	}
 
 	context.String(http.StatusOK, fmt.Sprintf("#cloud-config\n%s",
-
 		string(cloudConfigYaml),
 	))
 }
