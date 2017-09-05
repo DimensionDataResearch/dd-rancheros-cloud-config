@@ -51,7 +51,7 @@ func (app *Application) Initialize() error {
 	viper.BindEnv("MCP_VLAN_ID", "network.vlan_id")
 
 	viper.SetConfigType("yaml")
-	
+
 	viper.SetConfigName("cloud-config-server")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/etc")

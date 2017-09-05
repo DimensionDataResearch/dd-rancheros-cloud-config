@@ -43,6 +43,9 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 	serializedCloudConfig, err = yaml.Marshal(gin.H{
 		"hostname": server.Name,
 		"rancher": gin.H{
+			"sysctl": gin.H{
+				"vm.max_map_count": 262144,
+			},
 			"network": gin.H{
 				"interfaces": gin.H{
 					"eth*": gin.H{"dhcp": false},
@@ -61,6 +64,9 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 						},
 					},
 				},
+			},
+			"services_include": gin.H{
+				"open-vm-tools": true,
 			},
 			"services": gin.H{
 				"rancher-agent1": gin.H{
