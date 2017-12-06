@@ -23,6 +23,7 @@ type Application struct {
 	RancherAgentVersion string
 	RancherAgentURL     string
 	RancherOSDNS        string
+	ROSConsole          string
 
 	Client        *compute.Client
 	NetworkDomain *compute.NetworkDomain
@@ -69,6 +70,7 @@ func (app *Application) Initialize() error {
 	app.SSHPublicKeyFromYML = viper.GetString("rancher_os.SSHPublicKey")
 	app.RancherOSDNS = viper.GetString("rancher_os.network.dns.nameservers")
 	app.Client = compute.NewClient(app.McpRegion, app.McpUser, app.McpPassword)
+	app.ROSConsole = viper.GetString("rancher_os.console")
 
 	vlanID := viper.GetString("network.vlan_id")
 	app.VLAN, err = app.Client.GetVLAN(vlanID)
