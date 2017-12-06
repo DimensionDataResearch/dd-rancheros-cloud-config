@@ -22,6 +22,7 @@ network:
   vlan_id: "my_vlan_id" # The Id of the VLAN where the iPXE and cloud-config server are running.
 
 rancher_os:
+  console: centos
   network:
     dns:
        nameservers: "DNS IP"
