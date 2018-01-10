@@ -43,7 +43,7 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 	serializedCloudConfig, err = yaml.Marshal(gin.H{
 		"hostname": server.Name,
 		"rancher": gin.H{
-			"console": []string{app.ROSConsole},
+			"console": app.ROSConsole,
 			"sysctl": gin.H{
 				"vm.max_map_count": 262144,
 			},
