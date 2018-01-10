@@ -20,6 +20,7 @@ type Application struct {
 	McpRegion   string
 	//SSHPublicKey        string
 	SSHPublicKeyFromYML string
+	SSHVaultCAFromYML	string
 	RancherAgentVersion string
 	RancherAgentURL     string
 	RancherOSDNS        string
@@ -68,6 +69,7 @@ func (app *Application) Initialize() error {
 	app.RancherAgentVersion = viper.GetString("rancher_agent.version")
 	app.RancherAgentURL = viper.GetString("rancher_agent.url")
 	app.SSHPublicKeyFromYML = viper.GetString("rancher_os.SSHPublicKey")
+	app.SSHVaultCAFromYML = viper.GetString("rancher_os.SSHVaultCA")
 	app.RancherOSDNS = viper.GetString("rancher_os.network.dns.nameservers")
 	app.Client = compute.NewClient(app.McpRegion, app.McpUser, app.McpPassword)
 	app.ROSConsole = viper.GetString("rancher_os.console")

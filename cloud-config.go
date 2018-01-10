@@ -85,6 +85,11 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 			},
 		},
 		"ssh_authorized_keys": []string{app.SSHPublicKeyFromYML},
+		"runcmd": []string{
+			"echo" + app.SSHVaultCAFromYML,
+			"echo `TrustedUserCAKeys /etc/ssh/trusted-user-ca-keys.pem` >>/etc/ssh/sshd_config",
+			"sudo kill -HUP \$(ps ax |grep `sshd -D` | grep -v grep | awk `{ print $1 }`)", 
+		},
 	})
 	if err != nil {
 		return
