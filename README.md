@@ -27,6 +27,7 @@ rancher_os:
     dns:
        nameservers: "DNS IP"
   SSHPublicKey: "RAW Public key excluding email at end if present"
+  SSHVaultCA: "{{ Vault CA key from Hashicorp vault to validate signed keys }}"
 
 rancher_agent:
   version: "rancher/agent:v1.2.2" 
