@@ -89,6 +89,8 @@ func (app *Application) GenerateInnerCloudConfig(server compute.Server) (cloudCo
 			"echo " + app.SSHVaultCAFromYML + ">/etc/ssh/trusted-user-ca-keys.pem",
 			"echo \"TrustedUserCAKeys /etc/ssh/trusted-user-ca-keys.pem\" >>/etc/ssh/sshd_config",
 			"sudo kill -HUP \\$(ps ax |gmrep \"sshd -D\" | grep -v grep | awk \"{ print $1 }\")", 
+			"sudo yum -y install epel-release",
+			"sudo yum - install openssh-clients",
 		},
 	})
 	if err != nil {
